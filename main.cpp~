@@ -1,0 +1,12 @@
+
+#include <iostream>
+#include <cmath>
+
+int main(){
+
+    int i=0;
+    // File parser with different configurations
+    
+
+    return 0;
+}
