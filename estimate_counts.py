@@ -2,6 +2,7 @@
 import numpy as np
 import os, subprocess, tempfile
 import yaml
+# import Cacti_wrappr
 
 def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
 
@@ -13,8 +14,8 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
 
     # print(vol_res.shape)
 
-    with open("parameters.cfg") as file:
-        p_list = yaml.load(file, Loader = yaml.FullLoader)
+    with open("hardware.cfg") as file:
+        hardware_parameter_list = yaml.load(file, Loader = yaml.FullLoader)
 
     wordsize_in_bytes = 64
     tech_node = 65
@@ -169,9 +170,9 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     # temp_output = tempfile.mkstemp()[0]
     # subprocess.call(exec_list, stdout=temp_output)
     e[0] = 1
-    e[1] = 0.62*np.sqrt(p_list['L0_MEM_Size'])/2.12
+    e[1] = 0.62*np.sqrt(hardware_parameter_list['L0_MEM_Size'])/2.12
     e[2] = 7.73/2.12
-    e[3] = 0.62*np.sqrt(p_list['L1_MEM_Size'])/2.12
+    e[3] = 0.62*np.sqrt(hardware_parameter_list['L1_MEM_Size'])/2.12
     e[4] = 0.62/2.12
     e[5] = 6*e[0]
     e[6] = 9*e[1]
@@ -200,7 +201,7 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     vol_in = vol_op
     vol_in[4] = bfu[4]*nzr
 
-    aui = vol_in;
+    aui = vol_in
     aui[1] = aui[1] * k*t
     aui[2] = aui[2] * ax
     aui[5] = aui[5] * nzr
