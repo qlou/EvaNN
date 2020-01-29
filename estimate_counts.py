@@ -18,7 +18,7 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
         hardware_parameter_list = yaml.load(file, Loader = yaml.FullLoader)
 
     wordsize_in_bytes = 64
-    tech_node = 65
+    tech_node = hardware_parameter_list['tech_node']
     tech_node = tech_node  # technology node described in nm
     cache_size = 1024
     line_size = 64
@@ -169,6 +169,8 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
 
     # temp_output = tempfile.mkstemp()[0]
     # subprocess.call(exec_list, stdout=temp_output)
+    # The e[0] is the MAC computation
+    # The e[1] to e[3] represents the 
     e[0] = 1
     e[1] = 0.62*np.sqrt(hardware_parameter_list['L0_MEM_Size'])/2.12
     e[2] = 7.73/2.12
@@ -224,6 +226,7 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     ru[0] = 0
 
     nmac = bs*u*v*w*k*k*z
-    vE = nmac*(ru+1)*alpha*e
+    # vE = nmac*(ru+1)*alpha*e
+    vE = nmac*(ru+1)*alpha
     return vE
     

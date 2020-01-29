@@ -2,6 +2,7 @@
 class Mapping():
     def define_dataflow(dataflow, x, y):
         if dataflow == "row_stationary":
+            # The Eyeriss paper defines these parameters
             ax = x
             p = y
             q = 1

@@ -1,0 +1,1 @@
+The energy for computation is '{:.2e}'.format(E_FU) JThe energy for L0 memory read and write is '{:.2e}'.format(E_L0) JThe energy for L1 memory read and write is '{:.2e}'.format(E_L1), JThe total energy is '{:.2e}'.format(E_total), J

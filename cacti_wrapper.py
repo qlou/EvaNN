@@ -1,6 +1,6 @@
 
-class mem_energy_estimation():
-    def cacti_estimation():
+class CactiWrapper:
+    def CactiWrapper():
         wordsize_in_bytes = 64
         tech_node = 65
         tech_node = tech_node  # technology node described in nm
