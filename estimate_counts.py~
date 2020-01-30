@@ -14,8 +14,8 @@ def f_energy_model_crossbar(n, ADC_bits, device, crossbar_size):
     # Use a scaling factor to scale the ADC
     if ADC_bits == 8:
         ADC_energy = 4e-6
-    print(energy_per_crossbar, n, ADC_bits, crossbar_size)
-    total_energy = energy_per_crossbar*n + ADC_energy*crossbar_size
+
+    total_energy = energy_per_crossbar*n + ADC_energy*crossbar_size*n
     return total_energy
 
 def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
