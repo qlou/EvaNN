@@ -44,5 +44,9 @@ ADC_Precision: 8
 # Technology node for MOSFET (nm)
 tech_node: 65
 
-# Technology node for MOSFET (nm)
-tech_node: 65
+# Device technology (nm)
+Device: ReRAM
+
+# Input type
+# This can be amplitude, or sequential of pulses
+Input_type: amplitude
