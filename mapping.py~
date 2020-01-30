@@ -40,6 +40,6 @@ class Mapping():
         total_column = y
         num_of_crossbar_in_column = math.ceil(total_column/crossbar_size)
         num_of_crossbar = num_of_crossbar_in_row * num_of_crossbar_in_column
-        return num_of_crossbar
+
 
 

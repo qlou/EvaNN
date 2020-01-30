@@ -108,7 +108,7 @@ def main():
                 crossbar_energy = f_energy_model_crossbar(n, ADC_bits, device, crossbar_size) + crossbar_energy
     
 
-    print("The energy of crossbar computation is ", '{:.2e}'.format(crossbar_energy), "J")
+    print("The energy of computation is ", '{:.2e}'.format(crossbar_energy), "J")
          
     # This part print the number of activity counts
     if report_activity_counts == True:

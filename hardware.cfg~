@@ -44,5 +44,5 @@ ADC_Precision: 8
 # Technology node for MOSFET (nm)
 tech_node: 65
 
-# Device technology (nm)
-Device: ReRAM
+# Technology node for MOSFET (nm)
+tech_node: 65
