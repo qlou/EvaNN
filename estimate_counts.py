@@ -6,14 +6,20 @@ import yaml
 
 def f_energy_model_crossbar(n, ADC_bits, device, crossbar_size):
 
+    # The ReRAM data is from Zhao, Meiran, et al. 2017 IEEE International Electron Devices Meeting (IEDM). IEEE, 2017.
     if device == "ReRAM":
         energy_per_crossbar = 0.016384*1e-9
+
+    # The FeFET data is from Ni, Kai, et al. 2019 Symposium on VLSI Technology. IEEE, 2019.
     if device == "FeFET":
         energy_per_crossbar = 0.02048*1e-9
 
-    # Use a scaling factor to scale the ADC
-    if ADC_bits == 8:
-        ADC_energy = 4e-7
+    # Use a reference to scale the ADC design, the reference is obtained from
+    P_ref = 20e-6
+    f_ref = 40e6
+    ADC_bits_ref = 8.9
+
+    ADC_energy = P_ref * 1/f_ref *4**(ADC_bits-ADC_bits_ref)
 
     total_energy = energy_per_crossbar*n + ADC_energy*crossbar_size*n
     return total_energy

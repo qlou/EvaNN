@@ -35,6 +35,7 @@ def main():
     ADC_bits = hardware_parameter_list['ADC_Precision']
     report_activity_counts = hardware_parameter_list['Report_activity_counts']
     device = hardware_parameter_list['Device']
+    device_bit = hardware_parameter_list['Device_bits']
 
     for i in range(0,len(network_parameter_list)):
         if network_parameter_list[i]['type'] == 'convolution':
@@ -69,7 +70,7 @@ def main():
                 E_L1 = E_L1 + np.sum(vE[5:8])
 
             if dataflow == "crossbar":
-                n = Mapping.crossbar_computing_convolution(dataflow, w, x, y, z, crossbar_size)
+                n = Mapping.crossbar_computing_convolution(dataflow, w, x, y, z, crossbar_size, device_bit)
                 crossbar_energy = f_energy_model_crossbar(n, ADC_bits, device, crossbar_size) + crossbar_energy
                 
             # vE = vE * Emac
@@ -104,7 +105,7 @@ def main():
                 E_L1 = E_L1 + np.sum(vE[5:8])
 
             if dataflow == "crossbar":
-                n = Mapping.crossbar_computing_fully_connected(dataflow, x, y, crossbar_size)
+                n = Mapping.crossbar_computing_fully_connected(dataflow, x, y, crossbar_size, device_bit)
                 crossbar_energy = f_energy_model_crossbar(n, ADC_bits, device, crossbar_size) + crossbar_energy
     
 
