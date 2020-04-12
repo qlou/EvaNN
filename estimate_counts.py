@@ -8,7 +8,11 @@ def f_energy_model_crossbar(n, ADC_bits, device, crossbar_size):
 
     # The ReRAM data is from Zhao, Meiran, et al. 2017 IEEE International Electron Devices Meeting (IEDM). IEEE, 2017.
     if device == "ReRAM":
-        E_decoder = # Assume 1T1R here
+        # These are the unit energy
+        E_mux = 6.628e-16 # (J) Assume 1T1R here
+        E_decoder = 1.0602e-13 #(J)
+        E_array = 2.18352174e-15 #(J)
+        # E_ADC = 
         # energy_per_crossbar = 0.016384*1e-9
 
     # The FeFET data is from Ni, Kai, et al. 2019 Symposium on VLSI Technology. IEEE, 2019.
