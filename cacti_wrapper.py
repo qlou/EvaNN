@@ -1,6 +1,13 @@
 
 class CactiWrapper:
     def CactiWrapper():
+        # Copy all the configurations into the Cacti configuration files
+
+
+        # Run Cacti to obtain an output file
+
+        # Extract energy results from the output file
+        
         wordsize_in_bytes = 64
         tech_node = 65
         tech_node = tech_node  # technology node described in nm
