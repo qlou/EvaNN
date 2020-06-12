@@ -89,7 +89,27 @@ class CactiWrapper:
         # 0:0:100:100:100 will try to identify an organization that has both
         # least delay and dynamic power. Since such an organization is not possible, CACTI will
         # throw an error. Refer CACTI-6 Technical report for more details
-        config_file.write()
+        config_file.write("-deviate (delay, dynamic power, leakage power, cycle time, area) 20:100000:100000:100000:100000\n")
+        # Objective for NUCA
+        config_file.write("-NUCAdesign objective (weight delay, dynamic power, leakage power, cycle time, area) 100:100:0:0:100\n")
+        config_file.write("-NUCAdeviate (delay, dynamic power, leakage power, cycle time, area) 10:10000:10000:10000:10000\n")
+
+        # Set optimize tag to ED or ED^2 to obtain a cache configuration optimized for
+        # energy-delay or energy-delay sq. product
+        # Note: Optimize tag will disable weight or deviate values mentioned above
+        # Set it to NONE to let weight and deviate values determine the 
+        # appropriate cache configuration
+        # Could be selected from ED^2, ED, or NONE
+        config_file.write("-Optimize ED or ED^2 (ED, ED^2, NONE): \"ED^2\"\n")
+
+        # Select from NUCA or UCA
+        config_file.write("-Cache model (NUCA, UCA)  - \"UCA\"\n")
+        
+        # In order for CACTI to find the optimal NUCA bank value the following
+        # variable should be assigned 0.
+        config_file.write("-NUCA bank count 0\n")
+
+        
 
         config_file.close()
 """
@@ -97,28 +117,6 @@ class CactiWrapper:
 
 
 
-
--deviate (delay, dynamic power, leakage power, cycle time, area) 20:100000:100000:100000:100000
-
-# Objective for NUCA
--NUCAdesign objective (weight delay, dynamic power, leakage power, cycle time, area) 100:100:0:0:100
--NUCAdeviate (delay, dynamic power, leakage power, cycle time, area) 10:10000:10000:10000:10000
-
-# Set optimize tag to ED or ED^2 to obtain a cache configuration optimized for
-# energy-delay or energy-delay sq. product
-# Note: Optimize tag will disable weight or deviate values mentioned above
-# Set it to NONE to let weight and deviate values determine the 
-# appropriate cache configuration
-//-Optimize ED or ED^2 (ED, ED^2, NONE): "ED"
--Optimize ED or ED^2 (ED, ED^2, NONE): "ED^2"
-//-Optimize ED or ED^2 (ED, ED^2, NONE): "NONE"
-
--Cache model (NUCA, UCA)  - "UCA"
-//-Cache model (NUCA, UCA)  - "NUCA"
-
-# In order for CACTI to find the optimal NUCA bank value the following
-# variable should be assigned 0.
--NUCA bank count 0
 
 # NOTE: for nuca network frequency is set to a default value of 
 # 5GHz in time.c. CACTI automatically
