@@ -1,9 +1,20 @@
 
+import yaml
+
 class CactiWrapper:
     def CactiWrapper():
         # Copy all the configurations into the Cacti configuration files
+        
+        with open("hardware.cfg") as file:
+            hardware_parameter_list = yaml.load(file, Loader=yaml.FullLoader)
+            print(hardware_parameter_list)
+        with open("network.cfg") as file:
+            network_parameter_list = yaml.load(file, Loader=yaml.FullLoader)
 
 
+
+
+"""
         # Run Cacti to obtain an output file
 
         # Extract energy results from the output file
@@ -156,6 +167,7 @@ class CactiWrapper:
         f.close()
         os.chmod(script_path, 0o775)
         subprocess.call(exec_list, stdout=temp_output)
+"""
 
-
+CactiWrapper.CactiWrapper()
 
