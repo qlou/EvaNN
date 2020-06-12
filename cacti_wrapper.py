@@ -15,7 +15,7 @@ class CactiWrapper:
         L0_size = hardware_parameter_list['L0_MEM_Size']
         config_file = open("cacti/L0_mem.cfg","w+")
         config_file.write("# Cache size\n")
-        config_file.write("-size (bytes)" + str(L0_size) +"\n")
+        config_file.write("-size (bytes) " + str(L0_size) +"\n")
         # Identify power gating
         config_file.write("# power gating\n")
         config_file.write("-Array Power Gating - \"false\"\n")
@@ -39,8 +39,57 @@ class CactiWrapper:
         config_file.write("-exclusive read port 0\n")
         config_file.write("-exclusive write port 0\n")
         config_file.write("-single ended read ports 0\n")
+        config_file.write("-UCA bank count 1\n")
+        config_file.write("\n")
 
         # Technology node
+        technology_node = hardware_parameter_list["tech_node"]*0.001
+        config_file.write("-technology (u) "+ str(technology_node) +"\n")
+
+        # Data array cell type, select from "itrs-hp", "itrs-lstp", "itrs-lop"
+        config_file.write("-Data array cell type - \"itrs-hp\"\n")
+        # Following parameters can be "itrs-hp", "itrs-lstp", "itrs-lop"
+        config_file.write("-Data array peripheral type - \"itrs-hp\"\n")
+        # Following parameters can be values of (itrs-hp, itrs-lstp, itrs-lop, lp-dram, comm-dram)
+        config_file.write("-Tag array cell type - \"itrs-hp\"\n")
+        # Following parameters can be one of three values -- (itrs-hp, itrs-lstp, itrs-lop)
+        config_file.write("-Tag array peripheral type - \"itrs-hp\"\n")
+
+        # Bus width, could range from 16 to 512
+        config_file.write("-output/input bus width 512\n")
+        # 300 - 400 in step of 10
+        config_file.write("-operating temperature (K) 360\n")
+
+        # Identify type of memory
+        # Type of memory - cache (with a tag array) or "ram" (scratch ram similar to a register file)
+        # or main memory (no tag array and every access will happen at a page granularity Ref: CACTI 5.3 report)
+        config_file.write("-cache type \"cache\"\n")
+
+        # to model special structure like branch target buffers, directory, etc. 
+        # change the tag size parameter
+        # if you want cacti to calculate the tagbits, set the tag size to "default", could also be 22
+        config_file.write("-tag size (b) \"default\"\n")
+
+        # fast - data and tag access happen in parallel
+        # sequential - data array is accessed after accessing the tag array
+        # normal - data array lookup and tag access happen in parallel
+        #          final data block is broadcasted in data array h-tree 
+        #          after getting the signal from the tag array
+        config_file.write("-access mode (normal, sequential, fast) - \"fast\"\n")
+
+        # Design objective for UCA (or banks in NUCA)
+        config_file.write("-design objective (weight delay, dynamic power, leakage power, cycle time, area) 0:0:0:100:0\n")
+
+        
+        # Percentage deviation from the minimum value 
+        # Ex: A deviation value of 10:1000:1000:1000:1000 will try to find an organization
+        # that compromises at most 10% delay. 
+        # NOTE: Try reasonable values for % deviation. Inconsistent deviation
+        # percentage values will not produce any valid organizations. For example,
+        # 0:0:100:100:100 will try to identify an organization that has both
+        # least delay and dynamic power. Since such an organization is not possible, CACTI will
+        # throw an error. Refer CACTI-6 Technical report for more details
+        config_file.write()
 
         config_file.close()
 """
@@ -49,80 +98,6 @@ class CactiWrapper:
 
 
 
-
-# Multiple banks connected using a bus
--UCA bank count 1
-//-technology (u) 0.022
-//-technology (u) 0.040
-//-technology (u) 0.032
--technology (u) 0.090
-
-# following three parameters are meaningful only for main memories
-
--page size (bits) 8192 
--burst length 8
--internal prefetch width 8
-
-# following parameter can have one of five values -- (itrs-hp, itrs-lstp, itrs-lop, lp-dram, comm-dram)
--Data array cell type - "itrs-hp"
-//-Data array cell type - "itrs-lstp"
-//-Data array cell type - "itrs-lop"
-
-# following parameter can have one of three values -- (itrs-hp, itrs-lstp, itrs-lop)
--Data array peripheral type - "itrs-hp"
-//-Data array peripheral type - "itrs-lstp"
-//-Data array peripheral type - "itrs-lop"
-
-# following parameter can have one of five values -- (itrs-hp, itrs-lstp, itrs-lop, lp-dram, comm-dram)
--Tag array cell type - "itrs-hp"
-//-Tag array cell type - "itrs-lstp"
-//-Tag array cell type - "itrs-lop"
-
-# following parameter can have one of three values -- (itrs-hp, itrs-lstp, itrs-lop)
--Tag array peripheral type - "itrs-hp"
-//-Tag array peripheral type - "itrs-lstp"
-//-Tag array peripheral type - "itrs-lop
-
-# Bus width include data bits and address bits required by the decoder
-//-output/input bus width 16
--output/input bus width 512
-
-// 300-400 in steps of 10
--operating temperature (K) 360
-
-# Type of memory - cache (with a tag array) or ram (scratch ram similar to a register file) 
-# or main memory (no tag array and every access will happen at a page granularity Ref: CACTI 5.3 report)
--cache type "cache"
-//-cache type "ram"
-//-cache type "main memory"
-
-# to model special structure like branch target buffers, directory, etc. 
-# change the tag size parameter
-# if you want cacti to calculate the tagbits, set the tag size to "default"
--tag size (b) "default"
-//-tag size (b) 22
-
-# fast - data and tag access happen in parallel
-# sequential - data array is accessed after accessing the tag array
-# normal - data array lookup and tag access happen in parallel
-#          final data block is broadcasted in data array h-tree 
-#          after getting the signal from the tag array
-//-access mode (normal, sequential, fast) - "fast"
--access mode (normal, sequential, fast) - "normal"
-//-access mode (normal, sequential, fast) - "sequential"
-
-
-# DESIGN OBJECTIVE for UCA (or banks in NUCA)
--design objective (weight delay, dynamic power, leakage power, cycle time, area) 0:0:0:100:0
-
-# Percentage deviation from the minimum value 
-# Ex: A deviation value of 10:1000:1000:1000:1000 will try to find an organization
-# that compromises at most 10% delay. 
-# NOTE: Try reasonable values for % deviation. Inconsistent deviation
-# percentage values will not produce any valid organizations. For example,
-# 0:0:100:100:100 will try to identify an organization that has both
-# least delay and dynamic power. Since such an organization is not possible, CACTI will
-# throw an error. Refer CACTI-6 Technical report for more details
 -deviate (delay, dynamic power, leakage power, cycle time, area) 20:100000:100000:100000:100000
 
 # Objective for NUCA
