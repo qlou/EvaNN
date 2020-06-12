@@ -16,6 +16,7 @@ class CactiWrapper:
         config_file = open("cacti/L0_mem.cfg","w+")
         config_file.write("# Cache size\n")
         config_file.write("-size (bytes)" + str(L0_size) +"\n")
+        # Identify power gating
         config_file.write("# power gating\n")
         config_file.write("-Array Power Gating - \"false\"\n")
         config_file.write("-WL Power Gating - \"false\"\n")
@@ -23,48 +24,31 @@ class CactiWrapper:
         config_file.write("-Bitline floating - \"false\"\n")
         config_file.write("-Interconnect Power Gating - \"false\"\n")
         config_file.write("-Power Gating Performance Loss 0.01\n")
-        config_file.close()
+        config_file.write("\n")
 
+        # Identify line size
+        config_file.write("-block size (bytes) 8 \n")
+        config_file.write("\n")
+
+        # Model associativity, can select from 2, 4, 8, etc.
+        config_file.write("-associativity 0 \n")
+        config_file.write("\n")
+
+        # Different port
+        config_file.write("-read-write port 1\n")
+        config_file.write("-exclusive read port 0\n")
+        config_file.write("-exclusive write port 0\n")
+        config_file.write("-single ended read ports 0\n")
+
+        # Technology node
+
+        config_file.close()
 """
 
-# Cache size
-//-size (bytes) 2048
-//-size (bytes) 4096
-//-size (bytes) 32768
--size (bytes) 131072
-//-size (bytes) 262144
-//-size (bytes) 1048576
-//-size (bytes) 2097152
-//-size (bytes) 4194304
-//-size (bytes) 8388608
-//-size (bytes) 16777216
-//-size (bytes) 33554432
-//-size (bytes) 134217728
-//-size (bytes) 67108864
-//-size (bytes) 1073741824
 
-# power gating
--Array Power Gating - "false"
--WL Power Gating - "false"
--CL Power Gating - "false"
--Bitline floating - "false"
--Interconnect Power Gating - "false"
--Power Gating Performance Loss 0.01
 
-# Line size
-//-block size (bytes) 8
--block size (bytes) 64
 
-# To model Fully Associative cache, set associativity to zero
-//-associativity 0
--associativity 2
-//-associativity 4
-//-associativity 8
 
--read-write port 1
--exclusive read port 0
--exclusive write port 0
--single ended read ports 0
 
 # Multiple banks connected using a bus
 -UCA bank count 1
