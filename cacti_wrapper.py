@@ -13,72 +13,72 @@ class CactiWrapper:
 
         ### Generate L0 memory
         L0_size = hardware_parameter_list['L0_MEM_Size']
-        config_file = open("cacti/L0_mem.cfg","w+")
-        config_file.write("# Cache size\n")
-        config_file.write("-size (bytes) " + str(L0_size) +"\n")
+        cfg_file_content = ''
+        cfg_file_content += '# Cache size\n'
+        cfg_file_content += '-size (bytes) " + str(L0_size) +"\n'
         # Identify power gating
-        config_file.write("# power gating\n")
-        config_file.write("-Array Power Gating - \"false\"\n")
-        config_file.write("-WL Power Gating - \"false\"\n")
-        config_file.write("-CL Power Gating - \"false\"\n")
-        config_file.write("-Bitline floating - \"false\"\n")
-        config_file.write("-Interconnect Power Gating - \"false\"\n")
-        config_file.write("-Power Gating Performance Loss 0.01\n")
-        config_file.write("\n")
+        cfg_file_content += '# power gating\n'
+        cfg_file_content += '-Array Power Gating - \"false\"\n'
+        cfg_file_content += '-WL Power Gating - \"false\"\n'
+        cfg_file_content += '-CL Power Gating - \"false\"\n'
+        cfg_file_content += '-Bitline floating - \"false\"\n'
+        cfg_file_content += '-Interconnect Power Gating - \"false\"\n'
+        cfg_file_content += '-Power Gating Performance Loss 0.01\n'
+        cfg_file_content += '\n'
 
         # Identify line size
-        config_file.write("-block size (bytes) 8 \n")
-        config_file.write("\n")
+        cfg_file_content += '-block size (bytes) 8 \n'
+        cfg_file_content += '\n'
 
         # Model associativity, can select from 2, 4, 8, etc.
-        config_file.write("-associativity 0 \n")
-        config_file.write("\n")
+        cfg_file_content += '-associativity 0 \n'
+        cfg_file_content += '\n'
 
         # Different port
-        config_file.write("-read-write port 1\n")
-        config_file.write("-exclusive read port 0\n")
-        config_file.write("-exclusive write port 0\n")
-        config_file.write("-single ended read ports 0\n")
-        config_file.write("-UCA bank count 1\n")
-        config_file.write("\n")
+        cfg_file_content += '-read-write port 1\n'
+        cfg_file_content += '-exclusive read port 0\n'
+        cfg_file_content += '-exclusive write port 0\n'
+        cfg_file_content += '-single ended read ports 0\n'
+        cfg_file_content += '-UCA bank count 1\n'
+        cfg_file_content += '\n'
 
         # Technology node
         technology_node = hardware_parameter_list["tech_node"]*0.001
-        config_file.write("-technology (u) "+ str(technology_node) +"\n")
+        cfg_file_content += '-technology (u) "+ str(technology_node) +"\n'
 
         # Data array cell type, select from "itrs-hp", "itrs-lstp", "itrs-lop"
-        config_file.write("-Data array cell type - \"itrs-hp\"\n")
+        cfg_file_content += '-Data array cell type - \"itrs-hp\"\n'
         # Following parameters can be "itrs-hp", "itrs-lstp", "itrs-lop"
-        config_file.write("-Data array peripheral type - \"itrs-hp\"\n")
+        cfg_file_content += '-Data array peripheral type - \"itrs-hp\"\n'
         # Following parameters can be values of (itrs-hp, itrs-lstp, itrs-lop, lp-dram, comm-dram)
-        config_file.write("-Tag array cell type - \"itrs-hp\"\n")
+        cfg_file_content += '-Tag array cell type - \"itrs-hp\"\n'
         # Following parameters can be one of three values -- (itrs-hp, itrs-lstp, itrs-lop)
-        config_file.write("-Tag array peripheral type - \"itrs-hp\"\n")
+        cfg_file_content += '-Tag array peripheral type - \"itrs-hp\"\n'
 
         # Bus width, could range from 16 to 512
-        config_file.write("-output/input bus width 512\n")
+        cfg_file_content += '-output/input bus width 512\n'
         # 300 - 400 in step of 10
-        config_file.write("-operating temperature (K) 360\n")
+        cfg_file_content += '-operating temperature (K) 360\n'
 
         # Identify type of memory
         # Type of memory - cache (with a tag array) or "ram" (scratch ram similar to a register file)
         # or main memory (no tag array and every access will happen at a page granularity Ref: CACTI 5.3 report)
-        config_file.write("-cache type \"cache\"\n")
+        cfg_file_content += '-cache type \"cache\"\n'
 
         # to model special structure like branch target buffers, directory, etc. 
         # change the tag size parameter
         # if you want cacti to calculate the tagbits, set the tag size to "default", could also be 22
-        config_file.write("-tag size (b) \"default\"\n")
+        cfg_file_content += '-tag size (b) \"default\"\n'
 
         # fast - data and tag access happen in parallel
         # sequential - data array is accessed after accessing the tag array
         # normal - data array lookup and tag access happen in parallel
         #          final data block is broadcasted in data array h-tree 
         #          after getting the signal from the tag array
-        config_file.write("-access mode (normal, sequential, fast) - \"fast\"\n")
+        cfg_file_content += '-access mode (normal, sequential, fast) - \"fast\"\n'
 
         # Design objective for UCA (or banks in NUCA)
-        config_file.write("-design objective (weight delay, dynamic power, leakage power, cycle time, area) 0:0:0:100:0\n")
+        cfg_file_content += '-design objective (weight delay, dynamic power, leakage power, cycle time, area) 0:0:0:100:0\n'
 
         
         # Percentage deviation from the minimum value 
@@ -89,10 +89,10 @@ class CactiWrapper:
         # 0:0:100:100:100 will try to identify an organization that has both
         # least delay and dynamic power. Since such an organization is not possible, CACTI will
         # throw an error. Refer CACTI-6 Technical report for more details
-        config_file.write("-deviate (delay, dynamic power, leakage power, cycle time, area) 20:100000:100000:100000:100000\n")
+        cfg_file_content += '-deviate (delay, dynamic power, leakage power, cycle time, area) 20:100000:100000:100000:100000\n'
         # Objective for NUCA
-        config_file.write("-NUCAdesign objective (weight delay, dynamic power, leakage power, cycle time, area) 100:100:0:0:100\n")
-        config_file.write("-NUCAdeviate (delay, dynamic power, leakage power, cycle time, area) 10:10000:10000:10000:10000\n")
+        cfg_file_content += '-NUCAdesign objective (weight delay, dynamic power, leakage power, cycle time, area) 100:100:0:0:100\n'
+        cfg_file_content += '-NUCAdeviate (delay, dynamic power, leakage power, cycle time, area) 10:10000:10000:10000:10000\n'
 
         # Set optimize tag to ED or ED^2 to obtain a cache configuration optimized for
         # energy-delay or energy-delay sq. product
@@ -100,59 +100,56 @@ class CactiWrapper:
         # Set it to NONE to let weight and deviate values determine the 
         # appropriate cache configuration
         # Could be selected from ED^2, ED, or NONE
-        config_file.write("-Optimize ED or ED^2 (ED, ED^2, NONE): \"ED^2\"\n")
+        cfg_file_content += '-Optimize ED or ED^2 (ED, ED^2, NONE): \"ED^2\"\n'
 
         # Select from NUCA or UCA
-        config_file.write("-Cache model (NUCA, UCA)  - \"UCA\"\n")
+        cfg_file_content += '-Cache model (NUCA, UCA)  - \"UCA\"\n'
         
         # In order for CACTI to find the optimal NUCA bank value the following
         # variable should be assigned 0.
-        config_file.write("-NUCA bank count 0\n")
+        cfg_file_content += '-NUCA bank count 0\n'
 
-        
 
-        config_file.close()
+        # NOTE: for nuca network frequency is set to a default value of 
+        # 5GHz in time.c. CACTI automatically
+        # calculates the maximum possible frequency and downgrades this value if necessary
+
+        # By default CACTI considers both full-swing and low-swing 
+        # wires to find an optimal configuration. However, it is possible to 
+        # restrict the search space by changing the signaling from "default" to 
+        # "fullswing" or "lowswing" type.
+        # Can be "Global_30", "default", or "lowswing"
+        cfg_file_content += '-Wire signaling (fullswing, lowswing, default) - "Global_30"\n'
+        # Can select from global or semi-global
+        cfg_file_content += '-Wire inside mat - "semi-global"\n'
+        # Can select from global or semi-global
+        cfg_file_content += '-Wire outside mat - "semi-global"\n'
+        # can be "conservative" or "aggressive"
+        cfg_file_content += '-Interconnect projection - "conservative"\n'
+        # Contention in network (which is a function of core count and cache level) is one of
+        # the critical factor used for deciding the optimal bank count value
+        # core count can be 4, 8, or 16
+        cfg_file_content += '-Core count 8\n'
+        cfg_file_content += '-Cache level (L2/L3) - "L3"\n'
+
+        cfg_file_content += '-Add ECC - "true"\n'
+        # Can select from CONCISE or DETAILED
+        cfg_file_content += '-Print level (DETAILED, CONCISE) - "DETAILED"\n'
+
+
+        # for debugging
+        cfg_file_content += '-Print input parameters - "true"\n'
+
+        with open('cacti/L0_mem.cfg', 'w+') as output_file:
+            output_file.write(cfg_file_content)
+
+
 """
 
 
 
-
-
-# NOTE: for nuca network frequency is set to a default value of 
-# 5GHz in time.c. CACTI automatically
-# calculates the maximum possible frequency and downgrades this value if necessary
-
-# By default CACTI considers both full-swing and low-swing 
-# wires to find an optimal configuration. However, it is possible to 
-# restrict the search space by changing the signaling from "default" to 
-# "fullswing" or "lowswing" type.
--Wire signaling (fullswing, lowswing, default) - "Global_30"
-//-Wire signaling (fullswing, lowswing, default) - "default"
-//-Wire signaling (fullswing, lowswing, default) - "lowswing"
-
-//-Wire inside mat - "global"
--Wire inside mat - "semi-global"
-//-Wire outside mat - "global"
--Wire outside mat - "semi-global"
-
--Interconnect projection - "conservative"
-//-Interconnect projection - "aggressive"
-
-# Contention in network (which is a function of core count and cache level) is one of
-# the critical factor used for deciding the optimal bank count value
-# core count can be 4, 8, or 16
-//-Core count 4
--Core count 8
-//-Core count 16
--Cache level (L2/L3) - "L3"
-
--Add ECC - "true"
-
-//-Print level (DETAILED, CONCISE) - "CONCISE"
--Print level (DETAILED, CONCISE) - "DETAILED"
-
 # for debugging
--Print input parameters - "true"
+
 //-Print input parameters - "false"
 # force CACTI to model the cache with the 
 # following Ndbl, Ndwl, Nspd, Ndsam,
