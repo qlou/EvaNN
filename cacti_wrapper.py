@@ -11,12 +11,21 @@ class CactiWrapper:
         with open("network.cfg") as file:
             network_parameter_list = yaml.load(file, Loader=yaml.FullLoader)
 
+        ### Generate L0 memory
+        L0_size = hardware_parameter_list['L0_MEM_Size']
         config_file = open("cacti/L0_mem.cfg","w+")
         config_file.write("# Cache size\n")
-        config_file.write("-size ")
+        config_file.write("-size (bytes)" + str(L0_size) +"\n")
+        config_file.write("# power gating\n")
+        config_file.write("-Array Power Gating - \"false\"\n")
+        config_file.write("-WL Power Gating - \"false\"\n")
+        config_file.write("-CL Power Gating - \"false\"\n")
+        config_file.write("-Bitline floating - \"false\"\n")
+        config_file.write("-Interconnect Power Gating - \"false\"\n")
+        config_file.write("-Power Gating Performance Loss 0.01\n")
         config_file.close()
 
-
+"""
 
 # Cache size
 //-size (bytes) 2048
@@ -326,7 +335,6 @@ class CactiWrapper:
 
 
 
-"""
         # Run Cacti to obtain an output file
 
         # Extract energy results from the output file
