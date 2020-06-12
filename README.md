@@ -1,6 +1,8 @@
 
 EvaNN: this tool gives an energy estimation of DNN architecture.
 
+First, need to put Cacti into the folder ./
+
 The use of the tool is just executing main.py.
 
 The parameters are seperated in two files - hardware.cfg and network.cfg.
