@@ -15,7 +15,7 @@ class CactiWrapper:
         L0_size = hardware_parameter_list['L0_MEM_Size']
         cfg_file_content = ''
         cfg_file_content += '# Cache size\n'
-        cfg_file_content += '-size (bytes) " + str(L0_size) +"\n'
+        cfg_file_content += '-size (bytes) ' + str(L0_size*1024) +'\n'
         # Identify power gating
         cfg_file_content += '# power gating\n'
         cfg_file_content += '-Array Power Gating - \"false\"\n'
@@ -27,11 +27,11 @@ class CactiWrapper:
         cfg_file_content += '\n'
 
         # Identify line size
-        cfg_file_content += '-block size (bytes) 8 \n'
+        cfg_file_content += '-block size (bytes) 64 \n'
         cfg_file_content += '\n'
 
         # Model associativity, can select from 2, 4, 8, etc.
-        cfg_file_content += '-associativity 0 \n'
+        cfg_file_content += '-associativity 2 \n'
         cfg_file_content += '\n'
 
         # Different port
@@ -42,9 +42,15 @@ class CactiWrapper:
         cfg_file_content += '-UCA bank count 1\n'
         cfg_file_content += '\n'
 
+        # following three parameters are meaningful only for main memories
+        cfg_file_content += '-page size (bits) 8192\n'
+        cfg_file_content += '-burst length 8\n'
+        cfg_file_content += '-internal prefetch width 8\n'
+        cfg_file_content += '\n'
+
         # Technology node
         technology_node = hardware_parameter_list["tech_node"]*0.001
-        cfg_file_content += '-technology (u) "+ str(technology_node) +"\n'
+        cfg_file_content += '-technology (u) '+ str(technology_node) +'\n'
 
         # Data array cell type, select from "itrs-hp", "itrs-lstp", "itrs-lop"
         cfg_file_content += '-Data array cell type - \"itrs-hp\"\n'
