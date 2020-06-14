@@ -46,8 +46,45 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     # temp_output = tempfile.mkstemp()[0]
     # subprocess.call(exec_list)
     # temp_dir = tempfile.gettempdir()
-    script_path = temp_dir + '/cacti_temp.sh'
-    print('CACTI plug-in... Command line input saved to: ', script_path)
+    """
+    script_path = 'cacti/cacti_temp.sh'
+    cacti_run = open("cacti/cacti_temp.sh","w")
+    cacti_run.write("chmod +x cacti/cacti_temp.sh\n")
+    cacti_run.write("./cacti -infile L0_mem.cfg > L0_mem_results.txt")
+    cacti_run.close()
+    print('Running Cacti ... ')
+    os.system('sh cacti/cacti_temp.sh')
+    """
+    cacti_exec_dir = './'
+    if os.path.isfile(cacti_exec_dir + 'tmp_output.txt'):
+        os.remove(cacti_exec_dir + 'tmp_output.txt')
+    temp_output =  tempfile.mkstemp()[0]
+    # call cacti executable to evaluate energy consumption
+    cacti_exec_path = cacti_exec_dir + 'cacti'
+    exec_list = [cacti_exec_path, '-infile', 'cache.cfg']
+    # print(exec_list)
+    # print(temp_output)
+    # ret = subprocess.run(exec_list, stdout=temp_output)
+    ret = subprocess.run(exec_list, stdout=subprocess.PIPE)
+    # print(ret.stdout)
+
+    with open("111111.txt", "wb") as cacti_result:
+        cacti_result.write(ret.stdout)
+
+    with open("111111.txt", "r") as file:
+        for line in file:
+            if 'Total dynamic read energy per access' in line:
+                print(line)
+                line = line.split(":")
+                unit_read_energy = float(line[1])
+            if 'Total '
+
+
+    # flag = subprocess.call('sh cacti/cacti_temp.sh')
+    # subprocess.call('cacti/cacti -infile cache.cfg')
+    # if flag !=0:
+    #    error("Cacti failed!")
+    """
     f = open(script_path, 'a+')
     if len(f.readlines()) > 1000:
         print('WARN:  CACTI Plug-in... temp logs at: ', script_path, 'exceeds 1000 lines, delete file and create new one')
@@ -61,7 +98,7 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     f.close()
     os.chmod(script_path, 0o775)
     subprocess.call(exec_list, stdout=temp_output)
-
+    """
 
     # temp_output = tempfile.mkstemp()[0]
     # subprocess.call(exec_list, stdout=temp_output)
