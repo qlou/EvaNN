@@ -31,6 +31,8 @@ class Mapping():
         total_column = w*device_bit
         num_of_crossbar_in_column = math.ceil(total_column/crossbar_size)
         num_of_crossbar = num_of_crossbar_in_row * num_of_crossbar_in_column
+        num_of_crossbar += num_of_crossbar % 4 + 4 - num_of_crossbar%4 # Assume 4 crossbar constructs a tile
+
         return num_of_crossbar
 
     def crossbar_computing_fully_connected(dataflow, x, y, crossbar_size, device_bit):
@@ -40,6 +42,7 @@ class Mapping():
         total_column = y*device_bit
         num_of_crossbar_in_column = math.ceil(total_column/crossbar_size)
         num_of_crossbar = num_of_crossbar_in_row * num_of_crossbar_in_column
+        num_of_crossbar = num_of_crossbar + 4 - num_of_crossbar%4
         return num_of_crossbar
 
 
