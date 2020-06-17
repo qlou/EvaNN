@@ -2,20 +2,26 @@
 import yaml
 
 class CactiWrapper:
-    def CactiWrapper():
+    def __init__(self, mem_type):
+        self.mem_type = mem_type
+
+    def Cacti_Wrapper(self):
         # Copy all the configurations into the Cacti configuration files
         
         with open("hardware.cfg") as file:
             hardware_parameter_list = yaml.load(file, Loader=yaml.FullLoader)
-            print(hardware_parameter_list)
         with open("network.cfg") as file:
             network_parameter_list = yaml.load(file, Loader=yaml.FullLoader)
 
         ### Generate L0 memory
-        L0_size = hardware_parameter_list['L0_MEM_Size']
+        # L0_size = hardware_parameter_list['L0_MEM_Size']
+        if self.mem_type == "L0":
+            mem_size = hardware_parameter_list['L0_MEM_Size']
+        elif self.mem_type == "L1":
+            mem_size = hardware_parameter_list['L0_MEM_Size']
         cfg_file_content = ''
         cfg_file_content += '# Cache size\n'
-        cfg_file_content += '-size (bytes) ' + str(L0_size*1024) +'\n'
+        cfg_file_content += '-size (bytes) ' + str(mem_size*1024) +'\n'
         # Identify power gating
         cfg_file_content += '# power gating\n'
         cfg_file_content += '-Array Power Gating - \"false\"\n'
@@ -263,8 +269,12 @@ class CactiWrapper:
         #if we want to see all channels/bobs/memory configurations explored 
         #-verbose "T"
         #-verbose "F"
-        with open('cacti/L0_mem.cfg', 'w+') as output_file:
-            output_file.write(cfg_file_content)
+        if self.mem_type == "L0":
+            with open('L0_mem.cfg', 'w+') as output_file:
+                output_file.write(cfg_file_content)
+        elif self.mem_type == "L1":
+            with open('L1_mem.cfg', 'w+') as output_file:
+                output_file.write(cfg_file_content)
 
 
 """
@@ -423,5 +433,6 @@ class CactiWrapper:
         subprocess.call(exec_list, stdout=temp_output)
 """
 
-CactiWrapper.CactiWrapper()
+if __name__ == '__main__':
+    CactiWrapper.Cacti_Wrapper()
 

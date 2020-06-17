@@ -2,7 +2,7 @@
 import numpy as np
 import os, subprocess, tempfile
 import yaml
-# import Cacti_wrappr
+from cacti_wrapper import CactiWrapper
 
 def f_energy_model_crossbar(n, ADC_bits, device, crossbar_size):
 
@@ -57,13 +57,17 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     print('Running Cacti ... ')
     os.system('sh cacti/cacti_temp.sh')
     """
+    # L0_size = hardware_parameter_list['L0_MEM_Size']
+    # L1_size = hardware_parameter_list['L1_MEM_Size']
+    cacti = CactiWrapper("L0")
+    cacti = CactiWrapper("L1")
     cacti_exec_dir = './'
     if os.path.isfile(cacti_exec_dir + 'tmp_output.txt'):
         os.remove(cacti_exec_dir + 'tmp_output.txt')
     temp_output =  tempfile.mkstemp()[0]
     # call cacti executable to evaluate energy consumption
     cacti_exec_path = cacti_exec_dir + 'cacti'
-    exec_list = [cacti_exec_path, '-infile', 'cache.cfg']
+    exec_list = [cacti_exec_path, '-infile', 'L0_mem.cfg']
     # print(exec_list)
     # print(temp_output)
     # ret = subprocess.run(exec_list, stdout=temp_output)
@@ -78,10 +82,27 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
             if 'Total dynamic read energy per access' in line:
                 # print(line)
                 line = line.split(":")
-                unit_read_energy = float(line[1])
+                L0_unit_read_energy = float(line[1])
             if 'Total dynamic write energy per access' in line:
                 line = line.split(":")
-                unit_write_energy = float(line[1])
+                L0_unit_write_energy = float(line[1])
+
+    exec_list = [cacti_exec_path, '-infile', 'L1_mem.cfg']
+    ret = subprocess.run(exec_list, stdout=subprocess.PIPE)
+
+    with open("222222.txt", "wb") as cacti_result:
+        cacti_result.write(ret.stdout)
+
+    with open("222222.txt", "r") as file:
+        for line in file:
+            if 'Total dynamic read energy per access' in line:
+                # print(line)
+                line = line.split(":")
+                L0_unit_read_energy = float(line[1])
+            if 'Total dynamic write energy per access' in line:
+                line = line.split(":")
+                L0_unit_write_energy = float(line[1])
+
 
     # print(unit_write_energy, unit_read_energy)
 
@@ -111,10 +132,10 @@ def f_energy_model(Zrate, x, y, z, u, v, w, k, bs, ax, p, q, r, t, n, m):
     # The e[1] to e[3] represents the 
     e[0] = 1
     # e[1] = 0.62*np.sqrt(hardware_parameter_list['L0_MEM_Size'])/2.12
-    e[1] = unit_read_energy
+    e[1] = L0_unit_read_energy
     e[2] = 7.73/2.12
     # e[3] = 0.62*np.sqrt(hardware_parameter_list['L1_MEM_Size'])/2.12
-    e[3] = unit_write_energy
+    e[3] = L0_unit_write_energy
     e[4] = 0.62/2.12
     e[5] = 6*e[0]
     e[6] = 9*e[1]
